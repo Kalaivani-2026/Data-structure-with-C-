@@ -1,0 +1,102 @@
+//Disjoint Set Implementation
+//Name : kalaivani S M
+//Class : II-ECE-A
+//Roll.No : 23BEC0010
+//Problem Statement : Paperless Scholarship for students
+#include <iostream>
+#include <string>
+#define MAX 20
+using namespace std;
+class PaperlessScholarship {
+private:
+	struct data {
+		string name;
+		string gender;
+		int hsc_mark;
+		float parent_income;
+		long int aadhar_no;
+		long int account_no;
+		int rank;
+		data* parent;
+	};
+	data* s[MAX];
+public:
+	PaperlessScholarship();
+	void MakeSet(data* x, string name, string gender, int hsc_mark, float parent_income, long int aadhar_no, long int account_no);
+	void Makeset(int i, string name, string gender, int hsc_mark, float parent_income, long int aadhar_no, long int account_no);
+	data* Find(data* x);
+	void Union(data* x, data* y);
+	void Link(data* x, data* y);
+	data* getdata(int i);
+};
+PaperlessScholarship::PaperlessScholarship() {
+	for (int i = 0; i < MAX; i++)
+		s[i] = NULL;
+}
+void PaperlessScholarship::MakeSet(data* x, string name, string gender, int hsc_mark, float parent_income, long int aadhar_no, long int account_no) {
+	x->name = name;
+	x->gender = gender;
+	x->hsc_mark = hsc_mark;
+	x->parent_income = parent_income;
+	x->aadhar_no = aadhar_no;
+	x->account_no = account_no;
+	x->rank = 0;
+	x->parent = x;
+}
+void PaperlessScholarship::Makeset(int i, string name, string gender, int hsc_mark, float parent_income, long int aadhar_no, long int account_no) {
+	s[i] = new data;
+	MakeSet(s[i], name, gender, hsc_mark, parent_income, aadhar_no, account_no);
+}
+PaperlessScholarship::data* PaperlessScholarship::Find(data* x) {
+	if (x != x->parent)
+		x->parent = Find(x->parent);
+	return x->parent;
+}
+void PaperlessScholarship::Union(data* x, data* y) {
+	Link(Find(x), Find(y));
+}
+void PaperlessScholarship::Link(data* x, data* y) {
+	if (x->rank > y->rank) {
+		y->parent = x;
+	} else {
+		x->parent = y;
+		if (x->rank == y->rank)
+			y->rank++;
+	}
+}
+PaperlessScholarship::data* PaperlessScholarship::getdata(int i) {
+	return s[i];
+}
+int main() {
+	PaperlessScholarship ps;
+	ps.Makeset(0,"Rani","F",566,720000,908667576,6745459);
+	ps.Makeset(1,"Fabina","F",543,767658,876764435,9877685);
+	ps.Makeset(2,"Teddy","F",423,767658,876764435,9877685);
+	ps.Makeset(3,"Rakshi","F",592,90000,908667576,6745459);
+	ps.Makeset(4,"Dharshini","F",465,767658,876764435,9877685);
+	ps.Makeset(5,"Sheena","F",470,48000,876764435,6745459);
+	ps.Makeset(6,"Abigail","F",590,48000,876764435,6745459);
+	ps.Makeset(7,"Jean","F",472,52000,908667576,9877685);
+	ps.Makeset(8,"Priya","F",596,767658,876764435,9877685);
+	ps.Makeset(9,"Reebha","F",461,75000,908667576,6745459);
+	cout << "\nFind(3): " << ps.Find(ps.getdata(3))->name;
+	cout << "\nFind(7): " << ps.Find(ps.getdata(7))->name;
+	ps.Union(ps.getdata(0), ps.getdata(5));
+	ps.Union(ps.getdata(1), ps.getdata(7));
+	ps.Union(ps.getdata(3), ps.getdata(8));
+	cout << "\nFind(3): " << ps.Find(ps.getdata(3))->name;
+	ps.Union(ps.getdata(2), ps.getdata(6));
+	ps.Union(ps.getdata(4), ps.getdata(9));
+	ps.Union(ps.getdata(4), ps.getdata(5));
+	ps.Union(ps.getdata(2), ps.getdata(7));
+	ps.Union(ps.getdata(1), ps.getdata(3));
+	cout << "\nFind(3): " << ps.Find(ps.getdata(3))->name;
+	cout << "\nFind(2): " << ps.Find(ps.getdata(2))->name;
+	cout << "\nFind(1): " << ps.Find(ps.getdata(1))->name;
+	cout << "\nFind(0): " << ps.Find(ps.getdata(0))->name;
+	cout << "\nFind(4): " << ps.Find(ps.getdata(4))->name;
+	for (int i = 0; i < MAX; i++) {
+		delete ps.getdata(i);
+	}
+	return 0;
+}
